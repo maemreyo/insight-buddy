@@ -5,7 +5,7 @@
   "description": "Your intelligent reading companion that helps analyze, understand and think critically about any text content",
   "author": "Htur Wehttam <matthew.ngo1114@gmail.com>",
   "license": "MIT",
-  "type": "module",
+
   "keywords": [
     "browser-extension",
     "chrome-extension",
@@ -64,6 +64,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
+    "sharp": "^0.34.2",
     "stripe": "^14.5.0",
     "tailwind-merge": "^2.1.0",
     "zustand": "^4.4.7"
@@ -90,7 +91,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.1.0",
-    "plasmo": "^0.84.0",
+    "plasmo": "^0.90.5",
     "postcss": "^8.4.32",
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
