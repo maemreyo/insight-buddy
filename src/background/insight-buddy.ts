@@ -69,10 +69,16 @@ function setupContextMenus() {
     const action = info.menuItemId.toString().replace("insight-", "")
 
     // Send message to content script to get context
-    const response = await chrome.tabs.sendMessage(tab.id, {
-      type: "get-selection-context",
-      selection: info.selectionText
-    })
+    let response = null
+    try {
+      response = await chrome.tabs.sendMessage(tab.id, {
+        type: "get-selection-context",
+        selection: info.selectionText
+      })
+      console.log("Got context response:", response)
+    } catch (error) {
+      console.error("Error getting context:", error)
+    }
 
     // Analyze text
     const analysisRequest: AnalysisRequest = {

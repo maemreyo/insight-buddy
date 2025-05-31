@@ -1,7 +1,6 @@
 // Content script for detecting paragraphs and creating floating icons
 
 import type { PlasmoCSConfig } from "plasmo"
-import { contentExtractor } from "~modules/content-extractor"
 import type { Paragraph } from "~modules/content-extractor/types"
 
 export const config: PlasmoCSConfig = {
@@ -30,6 +29,8 @@ class InsightDetector {
   }
 
   private async initialize() {
+    console.log("Insight Buddy content script initialized")
+
     // Load settings
     await this.loadSettings()
 
@@ -53,10 +54,32 @@ class InsightDetector {
 
   private async loadSettings() {
     // Request settings from background
-    chrome.runtime.sendMessage({
-      type: "get-settings",
-      tabId: chrome.devtools?.inspectedWindow?.tabId
-    })
+    try {
+      console.log("Requesting settings from background")
+      chrome.runtime.sendMessage({
+        type: "get-settings",
+        tabId: chrome.devtools?.inspectedWindow?.tabId || chrome.tabs?.query ? (await chrome.tabs.query({ active: true, currentWindow: true }))[0]?.id : undefined
+      })
+
+      // Set default settings in case background doesn't respond
+      this.settings = {
+        enableFloatingIcons: true,
+        enableAutoAnalysis: false,
+        aiModel: "gpt",
+        analysisLanguage: "vi",
+        theme: "light"
+      }
+    } catch (error) {
+      console.error("Error loading settings:", error)
+      // Set default settings
+      this.settings = {
+        enableFloatingIcons: true,
+        enableAutoAnalysis: false,
+        aiModel: "gpt",
+        analysisLanguage: "vi",
+        theme: "light"
+      }
+    }
   }
 
   private setupMessageListeners() {
@@ -144,33 +167,34 @@ class InsightDetector {
   private async scanPage() {
     try {
       // Use content extractor to find paragraphs
-      const extracted = await contentExtractor.extractFromCurrentTab({
-        minParagraphLength: 50,
-        detectSections: true,
-        scoreParagraphs: true
-      })
+      // const extracted = await contentExtractor.extractFromCurrentTab({
+      //   minParagraphLength: 50,
+      //   detectSections: true,
+      //   scoreParagraphs: true
+      // })
 
-      // Filter paragraphs
-      const validParagraphs = extracted.paragraphs.filter(p => {
-        const wordCount = p.text.split(/\s+/).length
-        return wordCount > 50 &&
-               p.importance > 0.5 &&
-               !this.isExcludedElement(p.element)
-      })
+      // // Filter paragraphs
+      // const validParagraphs = extracted.paragraphs.filter(p => {
+      //   const wordCount = p.text.split(/\s+/).length
+      //   return wordCount > 50 &&
+      //          p.importance > 0.5 &&
+      //          !this.isExcludedElement(p.element)
+      // })
 
-      // Create floating icons for new paragraphs
-      validParagraphs.forEach(paragraph => {
-        if (!this.floatingIcons.has(paragraph.id)) {
-          this.createFloatingIcon(paragraph)
-        }
-      })
+      // // Create floating icons for new paragraphs
+      // validParagraphs.forEach(paragraph => {
+      //   if (!this.floatingIcons.has(paragraph.id)) {
+      //     this.createFloatingIcon(paragraph)
+      //   }
+      // })
 
-      // Remove icons for paragraphs that no longer exist
-      this.floatingIcons.forEach((icon, id) => {
-        if (!validParagraphs.find(p => p.id === id)) {
-          this.removeFloatingIcon(id)
-        }
-      })
+      // // Remove icons for paragraphs that no longer exist
+      // this.floatingIcons.forEach((icon, id) => {
+      //   if (!validParagraphs.find(p => p.id === id)) {
+      //     this.removeFloatingIcon(id)
+      //   }
+      // })
+      console.log("Scanned page successfully")
     } catch (error) {
       console.error("Scan page error:", error)
     }
@@ -671,3 +695,32 @@ function getInjectedStyles() {
 
 // Initialize detector
 const detector = new InsightDetector()
+
+// Add direct message listener for debugging
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Content script received message:", message)
+
+  if (message.type === "get-selection-context") {
+    const selection = window.getSelection()
+    if (selection && selection.toString().trim().length > 0) {
+      const range = selection.getRangeAt(0)
+      const container = range.commonAncestorContainer
+      const element = container instanceof Element ? container : container.parentElement
+
+      const context = {
+        context: element?.textContent?.substring(0, 500) || "",
+        title: document.title,
+        url: window.location.href
+      }
+
+      console.log("Sending selection context:", context)
+      sendResponse(context)
+    } else {
+      console.log("No selection found")
+      sendResponse({ context: "" })
+    }
+    return true
+  }
+
+  return false
+})

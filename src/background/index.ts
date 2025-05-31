@@ -7,12 +7,11 @@ import { setupAlarms } from "~core/alarms"
 import { setupContextMenus } from "~core/context-menus"
 import { setupNotifications } from "~core/notifications"
 import { supabase } from "~core/supabase"
+import { initializeInsightBuddy } from "./insight-buddy"
 
 // Check if chrome is available
 if (
-  typeof chrome !== "undefined" &&
-  chrome.runtime &&
-  chrome.runtime.getManifest
+  typeof chrome !== "undefined"
 ) {
   console.log("Background service worker started")
 
@@ -23,6 +22,9 @@ if (
   setupAlarms()
   setupContextMenus()
   setupNotifications()
+
+  // Initialize Insight Buddy
+  initializeInsightBuddy()
 
   // Initialize Supabase auth listener
   supabase.auth.onAuthStateChange((event, session) => {
@@ -73,4 +75,33 @@ if (
       .setPanelBehavior({ openPanelOnActionClick: true })
       .catch((error) => console.error(error))
   }
+
+  // Add direct message listener for debugging
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("Background received message:", message, "from:", sender)
+
+    if (message.type === "get-settings") {
+      // Send default settings
+      const defaultSettings = {
+        enableFloatingIcons: true,
+        enableAutoAnalysis: false,
+        aiModel: "gpt",
+        analysisLanguage: "vi",
+        theme: "light",
+        showConfidenceScores: true
+      }
+
+      if (sender.tab?.id) {
+        chrome.tabs.sendMessage(sender.tab.id, {
+          type: "settings-update",
+          settings: defaultSettings
+        }).catch(err => console.error("Error sending settings:", err))
+      }
+
+      sendResponse({ success: true })
+      return true
+    }
+
+    return false
+  })
 }
