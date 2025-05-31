@@ -1,5 +1,6 @@
 export * from './advanced-storage'
 export * from './components'
+export * from './history/history-manager'
 export * from './hooks'
 export { storageManager } from './storage-manager'
 export * from './storage-provider'

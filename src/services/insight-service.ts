@@ -1,13 +1,12 @@
 // Main service for coordinating Insight Buddy features
 
 import { analysisEngine } from "~modules/analysis"
-import { contentExtractor } from "~modules/content-extractor"
-import { messageBus } from "~modules/messaging"
-import { storageManager } from "~modules/storage"
-import { HistoryManager } from "~modules/storage/history"
-import { getInsightPrompt, formatInsightResponse, insightAnalysisTypes } from "~modules/analysis/insight-templates"
+import { formatInsightResponse, getInsightPrompt, insightAnalysisTypes } from "~modules/analysis/insight-templates"
 import type { AnalysisRequest, AnalysisResult } from "~modules/analysis/types"
+import { contentExtractor } from "~modules/content-extractor"
 import type { Paragraph } from "~modules/content-extractor/types"
+import { messageBus } from "~modules/messaging"
+import { HistoryManager, storageManager } from "~modules/storage"
 
 export interface InsightContext {
   selection?: string
