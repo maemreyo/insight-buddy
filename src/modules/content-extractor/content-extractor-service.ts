@@ -1,6 +1,6 @@
 import { Storage } from "@plasmohq/storage"
 import { TextExtractor } from "./text-extractor"
-import { ExtractedContent, ExtractionOptions } from "./types"
+import type { ExtractedContent, ExtractionOptions } from "./types"
 
 export class ContentExtractorService {
   private extractor: TextExtractor

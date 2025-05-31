@@ -1,107 +1,59 @@
-import "@plasmohq/messaging/background"
+// src/background/index.ts
 
-import { startHub } from "@plasmohq/messaging/pub-sub"
-import { Storage } from "@plasmohq/storage"
-
-import { setupAlarms } from "~core/alarms"
-import { setupContextMenus } from "~core/context-menus"
-import { setupNotifications } from "~core/notifications"
-import { supabase } from "~core/supabase"
 import { initializeInsightBuddy } from "./insight-buddy"
 
-// Check if chrome is available
-if (
-  typeof chrome !== "undefined"
-) {
-  console.log("Background service worker started")
+// Export empty object to make this a module
+export { }
 
-  // Start messaging hub
-  startHub()
-
-  // Initialize core services
-  setupAlarms()
-  setupContextMenus()
-  setupNotifications()
+// Initialize extension when installed or updated
+chrome.runtime.onInstalled.addListener(async (details) => {
+  console.log("Extension installed/updated:", details.reason)
 
   // Initialize Insight Buddy
-  initializeInsightBuddy()
+  await initializeInsightBuddy()
 
-  // Initialize Supabase auth listener
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log("Auth state changed:", event, session?.user?.email)
-
-    if (chrome.action) {
-      if (event === "SIGNED_IN") {
-        chrome.action.setBadgeText({ text: "" })
-      } else if (event === "SIGNED_OUT") {
-        chrome.action.setBadgeText({ text: "!" })
-        chrome.action.setBadgeBackgroundColor({ color: "#ef4444" })
-      }
-    }
-  })
-
-  // Handle extension installation
-  chrome.runtime.onInstalled.addListener(async (details) => {
-    const storage = new Storage()
-
-    if (details.reason === "install") {
-      await storage.set("installed_at", new Date().toISOString())
-
-      // Set default settings with correct property names
-      await storage.set("settings", {
-        theme: "light",
-        notifications: true,
-        autoSync: true
-      })
-
-      // Initialize Supabase session
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-      if (session) {
-        console.log("Existing session found:", session.user.email)
-      }
-
-      // Open welcome/onboarding page
-      chrome.tabs.create({
-        url: chrome.runtime.getURL("tabs/welcome.html")
-      })
-    }
-  })
-
-  // Handle side panel - check if API exists (Chrome 114+)
-  if (chrome.sidePanel && chrome.sidePanel.setPanelBehavior) {
-    chrome.sidePanel
-      .setPanelBehavior({ openPanelOnActionClick: true })
-      .catch((error) => console.error(error))
+  if (details.reason === "install") {
+    // Open welcome page
+    chrome.tabs.create({
+      url: chrome.runtime.getURL("tabs/welcome.html")
+    })
+  } else if (details.reason === "update") {
+    // Show update notification
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: chrome.runtime.getURL("assets/icon-128.png"),
+      title: "Insight Buddy đã được cập nhật",
+      message: "Phiên bản mới với nhiều cải tiến!"
+    })
   }
+})
 
-  // Add direct message listener for debugging
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Background received message:", message, "from:", sender)
+// Re-initialize on startup
+chrome.runtime.onStartup.addListener(async () => {
+  console.log("Browser started, re-initializing Insight Buddy")
+  await initializeInsightBuddy()
+})
 
-    if (message.type === "get-settings") {
-      // Send default settings
-      const defaultSettings = {
-        enableFloatingIcons: true,
-        enableAutoAnalysis: false,
-        aiModel: "gpt",
-        analysisLanguage: "vi",
-        theme: "light",
-        showConfidenceScores: true
-      }
-
-      if (sender.tab?.id) {
-        chrome.tabs.sendMessage(sender.tab.id, {
-          type: "settings-update",
-          settings: defaultSettings
-        }).catch(err => console.error("Error sending settings:", err))
-      }
-
-      sendResponse({ success: true })
-      return true
+// Handle extension icon click
+chrome.action.onClicked.addListener(async (tab) => {
+  if (tab.id) {
+    try {
+      await chrome.sidePanel.open({ tabId: tab.id })
+    } catch (error) {
+      // Fallback to popup if side panel not supported
+      chrome.windows.create({
+        url: chrome.runtime.getURL("sidepanel.html"),
+        type: "popup",
+        width: 400,
+        height: 600
+      })
     }
+  }
+})
 
-    return false
+// Keep service worker alive
+setInterval(() => {
+  chrome.storage.local.get("keep-alive", () => {
+    // Just accessing storage keeps the worker alive
   })
-}
+}, 20000)
