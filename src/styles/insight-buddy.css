@@ -1,0 +1,324 @@
+/* Global styles for Insight Buddy extension */
+
+/* CSS Reset for extension elements */
+.insight-buddy-icon,
+.insight-buddy-mini-menu,
+.insight-buddy-tooltip,
+.insight-buddy-fab,
+.insight-buddy-sidebar {
+  all: initial;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.insight-buddy-icon *,
+.insight-buddy-mini-menu *,
+.insight-buddy-tooltip *,
+.insight-buddy-fab *,
+.insight-buddy-sidebar * {
+  all: unset;
+  box-sizing: border-box;
+}
+
+/* Floating Icon Styles */
+.insight-buddy-icon {
+  position: absolute !important;
+  width: 32px !important;
+  height: 32px !important;
+  z-index: 9999 !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease-in-out !important;
+  pointer-events: auto !important;
+}
+
+/* Show icon on hover of parent paragraph */
+p:hover > .insight-buddy-icon,
+div:hover > .insight-buddy-icon,
+article:hover > .insight-buddy-icon,
+.insight-buddy-icon:hover,
+.insight-buddy-icon.hover,
+.insight-buddy-icon.visible {
+  opacity: 1 !important;
+}
+
+.insight-icon-inner {
+  width: 100% !important;
+  height: 100% !important;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
+}
+
+.insight-buddy-icon:hover .insight-icon-inner {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background: #f9fafb !important;
+  border-color: #3b82f6 !important;
+}
+
+.insight-icon-inner svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: #3b82f6 !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+}
+
+/* Mini Menu Styles */
+.insight-buddy-mini-menu {
+  position: fixed !important;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 4px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  min-width: 180px !important;
+  max-width: 220px !important;
+  z-index: 10002 !important;
+}
+
+.insight-buddy-mini-menu .menu-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 8px 12px !important;
+  border: none !important;
+  background: none !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  border-radius: 4px !important;
+  transition: background 0.2s ease !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  color: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.insight-buddy-mini-menu .menu-item:hover {
+  background: #f3f4f6 !important;
+}
+
+.insight-buddy-mini-menu .menu-item:active {
+  background: #e5e7eb !important;
+}
+
+.insight-buddy-mini-menu .icon {
+  font-size: 16px !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Divider */
+.insight-buddy-mini-menu .divider {
+  height: 1px !important;
+  background: #e5e7eb !important;
+  margin: 4px 8px !important;
+}
+
+/* Tooltip Styles */
+.insight-buddy-tooltip {
+  position: fixed !important;
+  padding: 12px 16px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  max-width: 320px !important;
+  word-wrap: break-word !important;
+  animation: fadeIn 0.2s ease !important;
+  z-index: 10003 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Tooltip type variations */
+.insight-buddy-tooltip.summary {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.insight-buddy-tooltip.questions {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.insight-buddy-tooltip.explanation {
+  background: #f59e0b !important;
+  color: #ffffff !important;
+}
+
+.insight-buddy-tooltip.loading {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.insight-buddy-tooltip.error {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.insight-buddy-tooltip.info {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+/* Tooltip arrow */
+.insight-buddy-tooltip::after {
+  content: "" !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-style: solid !important;
+  border-width: 6px 6px 0 6px !important;
+  border-color: transparent !important;
+  border-top-color: inherit !important;
+  bottom: -6px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Loading spinner */
+.insight-buddy-spinner {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid #ffffff !important;
+  border-top-color: transparent !important;
+  border-radius: 50% !important;
+  animation: spin 0.8s linear infinite !important;
+  margin-right: 8px !important;
+}
+
+/* Floating Action Button */
+.insight-buddy-fab {
+  position: fixed !important;
+  width: 36px !important;
+  height: 36px !important;
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  z-index: 10001 !important;
+}
+
+.insight-buddy-fab:hover {
+  background: #2563eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  transform: scale(1.05) !important;
+}
+
+.insight-buddy-fab:active {
+  transform: scale(0.95) !important;
+}
+
+.insight-buddy-fab svg {
+  width: 18px !important;
+  height: 18px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .insight-buddy-mini-menu {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+  }
+
+  .insight-buddy-mini-menu .menu-item {
+    color: #e5e7eb !important;
+  }
+
+  .insight-buddy-mini-menu .menu-item:hover {
+    background: #374151 !important;
+  }
+
+  .insight-icon-inner {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+  }
+
+  .insight-buddy-icon:hover .insight-icon-inner {
+    background: #111827 !important;
+    border-color: #3b82f6 !important;
+  }
+
+  .insight-buddy-tooltip.info {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -90%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Accessibility */
+.insight-buddy-icon:focus-visible .insight-icon-inner,
+.insight-buddy-fab:focus-visible,
+.insight-buddy-mini-menu .menu-item:focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .insight-icon-inner {
+    border-width: 2px !important;
+  }
+
+  .insight-buddy-mini-menu {
+    border-width: 2px !important;
+  }
+
+  .insight-buddy-tooltip {
+    border: 2px solid currentColor !important;
+  }
+}
+
+/* Prevent text selection when interacting */
+.insight-buddy-icon,
+.insight-buddy-mini-menu,
+.insight-buddy-fab {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}
+
+/* Z-index hierarchy */
+.insight-buddy-icon { z-index: 9999 !important; }
+.insight-buddy-fab { z-index: 10001 !important; }
+.insight-buddy-mini-menu { z-index: 10002 !important; }
+.insight-buddy-tooltip { z-index: 10003 !important; }
+.insight-buddy-sidebar { z-index: 10004 !important; }

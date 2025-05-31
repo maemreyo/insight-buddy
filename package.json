@@ -1,8 +1,8 @@
 {
   "name": "insight-buddy",
-  "displayName": "My Insight Buddy in the Era of AI",
+  "displayName": "Insight Buddy - AI Reading Assistant",
   "version": "1.0.0",
-  "description": "A powerful Chrome extension built with modern web technologies",
+  "description": "Your intelligent reading companion that helps analyze, understand and think critically about any text content",
   "author": "Htur Wehttam <matthew.ngo1114@gmail.com>",
   "license": "MIT",
   "type": "module",
