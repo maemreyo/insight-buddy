@@ -44,7 +44,7 @@ export function InsightSidebar() {
   const [searchQuery, setSearchQuery] = useState("")
 
   // Hooks
-  const { messages, lastMessage } = useMessage("insight-results")
+  const { _messages, lastMessage } = useMessage("insight-results")
   const { items: historyItems, addItem, clearHistory } = useHistory()
   const { value: settings, update: updateSettings } = useSettings("insight-settings")
 
